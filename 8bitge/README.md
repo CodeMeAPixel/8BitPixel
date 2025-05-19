@@ -1,6 +1,6 @@
 # 8BitPixel Game Engine (8BitGE)
 
-A lightweight, modern JavaScript/TypeScript game engine designed for creating retro-style games with modern web capabilities. Perfect for both desktop and mobile web browsers.
+A lightweight, modern JavaScript/TypeScript game engine designed for creating retro-style games with modern web capabilities. Perfect for both desktop and mobile web browsers. Originally developed for internal use at [8BitPixel.lol](https://8bitpixel.lol) by the [ByteBrush Studios](https://bytebrush.dev) team.
 
 ## Features
 
@@ -26,7 +26,7 @@ npm install @8bitpixel/8bitge
 Or use directly via CDN:
 
 ```html
-<script src="https://cdn.8bitpixel.io/8bitge/latest/8bitge.min.js"></script>
+<script src="https://cdn.8bitpixel.lol/8bitge/latest/8bitge.min.js"></script>
 ```
 
 ## Quick Start
@@ -183,14 +183,18 @@ For complete documentation, visit our [Documentation Site](https://docs.8bitpixe
 
 Check out these example games to see what's possible:
 
-- [Space Shooter](https://examples.8bitpixel.io/space-shooter) - Classic arcade shooter
-- [Platformer](https://examples.8bitpixel.io/platformer) - Side-scrolling platform game
-- [RPG](https://examples.8bitpixel.io/rpg) - Simple role-playing game example
-- [Puzzle Game](https://examples.8bitpixel.io/puzzle) - Match-three style puzzle game
+- [Space Shooter](https://examples.8bitpixel.lol/space-shooter) - Classic arcade shooter
+- [Platformer](https://examples.8bitpixel.lol/platformer) - Side-scrolling platform game
+- [RPG](https://examples.8bitpixel.lol/rpg) - Simple role-playing game example
+- [Puzzle Game](https://examples.8bitpixel.lol/puzzle) - Match-three style puzzle game
+
+You can also see the engine in action on our [8BitPixel Arcade](https://8bitpixel.lol) where we've built games like:
+- Cyber Pong - A futuristic twist on the classic pong
+- Pixel Rush - An action-packed runner game
 
 ## Future Plans
 
-See our [Future Plans](./FuturePlans.md) document for upcoming features and improvements.
+See our [FuturePlans.md](./FuturePlans.md) document for upcoming features and improvements.
 
 ## Contributing
 
@@ -198,8 +202,14 @@ Contributions are welcome! Please check out our [Contribution Guidelines](./CONT
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0) - see the [LICENSE](./LICENSE) file for details.
+
+The AGPL-3.0 license ensures that all users who interact with the software over a network have access to the source code. If you modify the code and share it with others or use it to provide a service over a network, you must also share your source code under the same license terms.
 
 ## Support
 
-Need help? Join our [Discord Server](https://discord.gg/8bitpixel) or open an [issue](https://github.com/codemeapixel/8bitge/issues).
+Need help? Join our [Discord Server](https://discord.gg/bytebrush) or open an [issue](https://github.com/bytebrush/8bitge/issues).
+
+## About ByteBrush.dev
+
+[ByteBrush.dev](https://bytebrush.dev) is the development team behind 8BitPixel.lol and the 8BitGE game engine. We specialize in web-based game development and interactive experiences with a focus on performance and cross-platform compatibility.
