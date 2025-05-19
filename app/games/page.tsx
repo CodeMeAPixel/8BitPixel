@@ -5,23 +5,21 @@ import { GameCard } from "@/components/game-card"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { getAllGames, Game } from "@/lib/games"
-import { Component, Globe, Filter, X, Star } from "lucide-react"
-
-export const metadata = {
-  title: "Game Hub | 8BitPixel Arcade",
-  description: "Browse our curated collection of pixel-perfect games at 8BitPixel Arcade.",
-}
+import { Component, Globe, Filter, X, Star, Zap, Search } from "lucide-react"
 
 export default function GamesPage() {
   const [games, setGames] = useState<Game[]>([])
   const [filteredGames, setFilteredGames] = useState<Game[]>([])
+  const [searchQuery, setSearchQuery] = useState("")
   const [filters, setFilters] = useState({
     category: "All Categories",
     type: "All Games",
+    engine: "All Engines",
     sort: "Popular",
   })
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
   const [loading, setLoading] = useState(true)
+  
   // Fetch games on component mount
   useEffect(() => {
     const fetchGames = async () => {
@@ -39,6 +37,15 @@ export default function GamesPage() {
   useEffect(() => {
     let result = [...games]
     
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      result = result.filter(game => 
+        game.title.toLowerCase().includes(query) || 
+        game.description.toLowerCase().includes(query)
+      )
+    }
+    
     // Filter by category
     if (filters.category !== "All Categories") {
       result = result.filter(game => game.category === filters.category)
@@ -49,6 +56,11 @@ export default function GamesPage() {
       result = result.filter(game => game.hasComponent === true)
     } else if (filters.type === "External Games") {
       result = result.filter(game => !game.hasComponent)
+    }
+    
+    // Filter by engine
+    if (filters.engine === "8BitGE Games") {
+      result = result.filter(game => game.usesGameEngine === true)
     }
     
     // Sort the games
@@ -65,34 +77,38 @@ export default function GamesPage() {
     }
     
     setFilteredGames(result)
-  }, [games, filters])
-
+  }, [games, filters, searchQuery])
+  
   // Get unique categories from games
   const categories = ["All Categories", ...Array.from(new Set(games.map(game => game.category).filter(Boolean)))]
-  // Count native vs external games
+  // Count native vs external games and 8BitGE games
   const nativeCount = games.filter(game => game.hasComponent).length
   const externalCount = games.filter(game => !game.hasComponent).length
-
+  const engineCount = games.filter(game => game.usesGameEngine).length
+  
   return (
-    <div className="min-h-screen bg-background text-white">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="pt-24 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-4 md:mb-0">
-              Game Hub
-            </h1>
-              {/* Mobile filter button */}
-            <button 
-              className="md:hidden bg-gray-900 border border-cyan-900/50 text-gray-300 px-4 py-2 rounded-md flex items-center justify-between w-full mb-4"
-              onClick={() => setIsFiltersOpen(!isFiltersOpen)}
-            >
-              <span>Filters {Object.values(filters).some(val => val !== "All Categories" && val !== "All Games" && val !== "Popular") && '(Active)'}</span>
-              <Filter size={18} className={filters.category !== "All Categories" || filters.type !== "All Games" ? "text-cyan-400" : ""} />
-            </button>
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-bold mb-6">Games</h1>
+          
+          {/* Search and filter UI */}
+          <div className="mb-8 flex flex-col lg:flex-row gap-4 bg-gray-900 p-4 rounded-lg">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+                <input 
+                  type="text"
+                  placeholder="Search games..."
+                  className="pl-10 w-full py-2 bg-gray-800 border border-gray-700 rounded-lg text-gray-200"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+            </div>
             
-            {/* Filter controls - responsive */}
-            <div className={`flex flex-col md:flex-row md:items-center space-y-3 md:space-y-0 md:space-x-4 ${isFiltersOpen ? 'block' : 'hidden md:flex'}`}>
+            <div className="flex gap-4 flex-wrap">
               <select 
                 className={`bg-gray-900 border ${filters.category !== "All Categories" ? "border-cyan-500" : "border-cyan-900/50"} text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50`}
                 value={filters.category}
@@ -114,6 +130,15 @@ export default function GamesPage() {
               </select>
               
               <select 
+                className={`bg-gray-900 border ${filters.engine !== "All Engines" ? "border-indigo-500" : "border-gray-800"} text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500/50`}
+                value={filters.engine}
+                onChange={(e) => setFilters({...filters, engine: e.target.value})}
+              >
+                <option value="All Engines">All Engines</option>
+                <option value="8BitGE Games">8BitGE Games ({engineCount})</option>
+              </select>
+              
+              <select 
                 className={`bg-gray-900 border ${filters.sort !== "Popular" ? "border-cyan-500" : "border-cyan-900/50"} text-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-cyan-500/50`}
                 value={filters.sort}
                 onChange={(e) => setFilters({...filters, sort: e.target.value})}
@@ -126,7 +151,7 @@ export default function GamesPage() {
               {/* Reset filters button - only show if filters are active */}
               {(filters.category !== "All Categories" || filters.type !== "All Games" || filters.sort !== "Popular") && (
                 <button 
-                  onClick={() => setFilters({category: "All Categories", type: "All Games", sort: "Popular"})}
+                  onClick={() => setFilters({category: "All Categories", type: "All Games", engine: "All Engines", sort: "Popular"})}
                   className="flex items-center justify-center px-2 py-2 bg-gray-800 hover:bg-gray-700 rounded-md text-gray-300"
                   aria-label="Reset filters"
                 >
@@ -135,7 +160,9 @@ export default function GamesPage() {
                 </button>
               )}
             </div>
-          </div>          {/* Game type legend */}
+          </div>          
+          
+          {/* Game type legend */}
           <div className="flex flex-wrap items-center gap-4 mb-6 bg-gray-900/50 p-4 rounded-lg border border-gray-800">
             <div className="flex-grow">
               <h2 className="text-gray-300 font-medium mb-2">Game Types:</h2>
@@ -154,17 +181,23 @@ export default function GamesPage() {
                     External Games <span className="text-gray-500 ml-1">({externalCount})</span>
                   </span>
                 </div>
+                <div className="flex items-center">
+                  <div className="w-3 h-3 rounded-full bg-indigo-500 mr-2"></div>
+                  <span className="text-sm text-gray-300 flex items-center">
+                    <Zap size={14} className="mr-1 text-indigo-400" />
+                    8BitGE <span className="text-gray-500 ml-1">({engineCount})</span>
+                  </span>
+                </div>
               </div>
             </div>
             
             <div className="text-xs text-right text-gray-500 max-w-sm">
-              Native games run directly in your browser without leaving 8BitPixel Arcade. 
-              External games will redirect you to partner sites.
+              Native games run directly in your browser. 8BitGE games use our custom game engine for enhanced performance and effects.
             </div>
           </div>
 
           {/* Active filters display */}
-          {(filters.category !== "All Categories" || filters.type !== "All Games") && (
+          {(filters.category !== "All Categories" || filters.type !== "All Games" || filters.engine !== "All Engines") && (
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <div className="text-gray-400 text-sm mr-2">Active filters:</div>
               
@@ -193,6 +226,19 @@ export default function GamesPage() {
                   </button>
                 </div>
               )}
+              
+              {filters.engine !== "All Engines" && (
+                <div className="bg-indigo-900/20 text-indigo-400 text-xs py-1 px-2 rounded-full flex items-center">
+                  <span className="mr-1">{filters.engine}</span>
+                  <button 
+                    onClick={() => setFilters({...filters, engine: "All Engines"})}
+                    className="hover:bg-indigo-800 rounded-full p-0.5"
+                    aria-label="Remove engine filter"
+                  >
+                    <X size={12} />
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -207,7 +253,9 @@ export default function GamesPage() {
                 <> ({filters.type})</>
               )}
             </p>
-          </div>          {/* Loading state */}
+          </div>
+          
+          {/* Loading state */}
           {loading && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
               {[...Array(8)].map((_, index) => (
@@ -291,3 +339,4 @@ export default function GamesPage() {
       <Footer />
     </div>
   )
+}

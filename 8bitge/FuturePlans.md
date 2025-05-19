@@ -12,6 +12,7 @@ This document outlines future development plans and feature ideas for the 8BitGE
 - [ ] Implement a debug inspector tool for viewing/editing entities during runtime
 - [ ] Add support for networking/multiplayer capabilities
 - [ ] Create a web worker implementation for multithreaded processing
+- [x] Integrate game engine into existing games in the 8BitPixel Arcade
 
 ## Tools & Editor
 
@@ -98,10 +99,13 @@ This document outlines future development plans and feature ideas for the 8BitGE
 - [ ] Implement an asset marketplace integration
 - [ ] Create tools for sharing and collaborating on game projects
 
-## Integration & Export
+## Integration & Platform 
 
 - [ ] Add export options for various platforms (mobile, desktop)
 - [ ] Implement integration with popular game stores
 - [ ] Add support for analytics and metrics
 - [ ] Create social media sharing features
 - [ ] Implement ad integration options for monetization
+- [x] Create connector libraries for React components
+- [ ] Develop an adapter system for non-React frameworks
+- [ ] Create a version optimized for 8BitPixel Arcade platform

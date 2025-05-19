@@ -17,9 +17,10 @@ const gameComponentMap = {
 
 interface GameLoaderProps {
   gameId: GameId
+  height?: string
 }
 
-export function GameLoader({ gameId }: GameLoaderProps) {
+export function GameLoader({ gameId, height = '600px' }: GameLoaderProps) {
   // Get the correct component for this game
   const GameComponent = gameComponentMap[gameId as keyof typeof gameComponentMap]
   
@@ -43,7 +44,9 @@ export function GameLoader({ gameId }: GameLoaderProps) {
         </div>
       </div>
     }>
-      <GameComponent />
+      <div style={{ height: height === 'full' ? '100%' : height }}>
+        <GameComponent />
+      </div>
     </Suspense>
   )
 }

@@ -5,8 +5,11 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Game } from "@/lib/games"
-import { ArrowLeft, Maximize2, Minimize2, Home, RefreshCcw } from "lucide-react"
+import { ArrowLeft, Maximize2, Minimize2, Home, RefreshCcw, HelpCircle } from "lucide-react"
 import { GameLoader } from "@/components/game-loader"
+import { GameRulesModal } from "@/components/game-rules-modal"
+import { Button } from "@/components/ui/button"
+import { getGameById } from "@/lib/games"
 
 interface GamePlayClientProps {
   game: Game
@@ -16,6 +19,7 @@ export function GamePlayClient({ game }: GamePlayClientProps) {
   const [isLoading, setIsLoading] = useState(true)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [showControls, setShowControls] = useState(true)
+  const [showRules, setShowRules] = useState(false)
   
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -36,6 +40,30 @@ export function GamePlayClient({ game }: GamePlayClientProps) {
     setIsLoading(true)
     // Use a slightly longer delay for component games to ensure they fully reset
     setTimeout(() => setIsLoading(false), game.hasComponent ? 1500 : 1000)
+  }
+
+  const gameData = game // Assuming game data is directly available in the game prop
+
+  // While loading or if game not found, show appropriate state
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500 mb-4"></div>
+        <p className="text-gray-400">Loading game...</p>
+      </div>
+    )
+  }
+
+  if (!game) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <h1 className="text-2xl font-bold text-red-500 mb-4">Game Not Found</h1>
+        <p className="text-gray-400 mb-6">Sorry, we couldn't find the game you're looking for.</p>
+        <Link href="/games" className="text-cyan-500 hover:underline">
+          Browse all games
+        </Link>
+      </div>
+    )
   }
 
   return (
@@ -85,6 +113,16 @@ export function GamePlayClient({ game }: GamePlayClientProps) {
                 >
                   {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
                 </button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowRules(true)}
+                  className="text-gray-400 hover:text-cyan-400 transition-colors"
+                  title="Game Rules"
+                >
+                  <HelpCircle className="w-5 h-5" />
+                </Button>
               </div>
             </div>
           )}          {/* Game Container */}
@@ -125,6 +163,57 @@ export function GamePlayClient({ game }: GamePlayClientProps) {
           </div>
         </div>
       </main>
+
+      {/* Game rules modal */}
+      <GameRulesModal
+        gameData={gameData}
+        isOpen={showRules}
+        onClose={() => setShowRules(false)}
+      />
     </div>
   )
 }
+
+export default function GamePlayClientWrapper({ gameId }: { gameId: string }) {
+  const [game, setGame] = useState<Game | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Fetch game data
+  useEffect(() => {
+    const fetchGame = async () => {
+      try {
+        const gameData = await getGameById(gameId)
+        setGame(gameData)
+      } catch (error) {
+        console.error("Error fetching game:", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchGame()
+  }, [gameId])
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-500 mb-4"></div>
+        <p className="text-gray-400">Loading game...</p>
+      </div>
+    )
+  }
+
+  if (!game) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <h1 className="text-2xl font-bold text-red-500 mb-4">Game Not Found</h1>
+        <p className="text-gray-400 mb-6">Sorry, we couldn't find the game you're looking for.</p>
+        <Link href="/games" className="text-cyan-500 hover:underline">
+          Browse all games
+        </Link>
+      </div>
+    )
+  }
+
+  return <GamePlayClient game={game} />
+  }

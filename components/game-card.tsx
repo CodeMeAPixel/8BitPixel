@@ -3,7 +3,7 @@
 import { useState, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ExternalLink, Gamepad, Component, Globe } from "lucide-react"
+import { ExternalLink, Gamepad, Component, Globe, Zap } from "lucide-react"
 
 interface Game {
   id: string
@@ -15,6 +15,7 @@ interface Game {
   featured?: boolean
   dateAdded?: string
   hasComponent?: boolean
+  usesGameEngine?: boolean
 }
 
 interface GameCardProps {
@@ -95,21 +96,31 @@ export function GameCard({ game, showViewDetails = false }: GameCardProps) {
           <h3 className="text-2xl font-bold font-display text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
             {game.title}
           </h3>
-          <div className={`px-2 py-1 text-xs rounded-full flex items-center ${
-            game.hasComponent 
-              ? 'bg-cyan-900/30 text-cyan-400' 
-              : 'bg-gray-800 text-gray-400'
-          }`}>
-            {game.hasComponent ? (
-              <>
-                <Component className="w-3 h-3 mr-1" />
-                <span>Native</span>
-              </>
-            ) : (
-              <>
-                <Globe className="w-3 h-3 mr-1" />
-                <span>External</span>
-              </>
+          <div className="flex items-center space-x-2">
+            <div className={`px-2 py-1 text-xs rounded-full flex items-center ${
+              game.hasComponent 
+                ? 'bg-cyan-900/30 text-cyan-400' 
+                : 'bg-gray-800 text-gray-400'
+            }`}>
+              {game.hasComponent ? (
+                <>
+                  <Component className="w-3 h-3 mr-1" />
+                  <span>Native</span>
+                </>
+              ) : (
+                <>
+                  <Globe className="w-3 h-3 mr-1" />
+                  <span>External</span>
+                </>
+              )}
+            </div>
+            
+            {/* Display badge for games using our engine */}
+            {game.usesGameEngine && (
+              <div className="px-2 py-1 text-xs rounded-full flex items-center bg-indigo-900/30 text-indigo-400">
+                <Zap className="w-3 h-3 mr-1" />
+                <span>8BitGE</span>
+              </div>
             )}
           </div>
         </div>

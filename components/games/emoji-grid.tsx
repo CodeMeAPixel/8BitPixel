@@ -297,112 +297,162 @@ export function EmojiGridGame() {
     </div>
   )
 
-  // Render game UI
-  return (
-    <div className="w-full h-full min-h-[600px] bg-gradient-to-br from-cyan-900 to-blue-800 rounded-lg overflow-hidden flex flex-col items-center justify-center p-4">
-      {!gameStarted ? (
-        // Show game rules and start screen before game starts
-        renderRules()
-      ) : (
-        // Game in progress
-        <>
-          <div className="w-full flex justify-between items-center mb-4">
-            <div className="flex flex-col items-center py-2 px-4 bg-white/10 backdrop-blur-sm rounded-lg min-w-[100px]">
-              <div className="text-gray-300 text-xs mb-1">Score</div>
-              <div className="text-white font-bold text-xl">{score}</div>
+  const renderGame = () => (
+    <>
+      <div className="w-full flex justify-between items-center mb-4">
+        <div className="flex flex-col items-center py-2 px-4 bg-white/10 backdrop-blur-sm rounded-lg min-w-[100px]">
+          <div className="text-gray-300 text-xs mb-1">Score</div>
+          <div className="text-white font-bold text-xl">{score}</div>
+        </div>
+        
+        <div className="flex items-center justify-center">
+          {message && (
+            <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1 text-white text-sm animate-fade-in-out">
+              {message}
             </div>
-            
-            <div className="flex items-center justify-center">
-              {message && (
-                <div className="bg-white/10 backdrop-blur-sm rounded-lg px-3 py-1 text-white text-sm animate-fade-in-out">
-                  {message}
-                </div>
-              )}
-            </div>
-            
-            <div className="flex flex-col items-center py-2 px-4 bg-white/10 backdrop-blur-sm rounded-lg min-w-[100px]">
-              <div className="text-gray-300 text-xs mb-1">Time Remaining</div>
-              <div className={`font-bold text-xl ${timeRemaining <= 30 ? 'text-red-400' : 'text-white'}`}>
-                {formatTime(timeRemaining)}
-              </div>
-            </div>
+          )}
+        </div>
+        
+        <div className="flex flex-col items-center py-2 px-4 bg-white/10 backdrop-blur-sm rounded-lg min-w-[100px]">
+          <div className="text-gray-300 text-xs mb-1">Time</div>
+          <div className={`font-bold text-xl ${timeRemaining <= 30 ? 'text-red-400' : 'text-white'}`}>
+            {formatTime(timeRemaining)}
           </div>
-          
-          <div 
-            ref={gridRef}
-            className="bg-white/10 backdrop-blur-sm rounded-lg p-4 w-full max-w-md"
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          >
-            <div className="grid grid-cols-6 gap-2">
-              {grid.map((row, rowIndex) => (
-                row.map((emoji, colIndex) => {
-                  const isSelected = selectedEmojis.some(
-                    pos => pos.row === rowIndex && pos.col === colIndex
-                  );
-                  
-                  // Find position in selection for connecting lines
-                  const selectionIndex = selectedEmojis.findIndex(
-                    pos => pos.row === rowIndex && pos.col === colIndex
-                  );
-                  
-                  return (
-                    <button
-                      key={`${rowIndex}-${colIndex}`}
-                      onClick={() => handleEmojiClick(rowIndex, colIndex)}
-                      onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                      onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-                      className={`w-12 h-12 flex items-center justify-center text-2xl rounded-lg transition-all ${
-                        isSelected 
-                          ? 'bg-gradient-to-br from-cyan-600/70 to-blue-600/70 scale-95 shadow-inner ring-2 ring-white/30' 
-                          : 'bg-white/20 hover:bg-white/30'
-                      }`}
-                      disabled={!gameStarted}
-                    >
-                      <span className="transform transition-all" style={{
-                        transform: isSelected ? 'scale(1.2)' : 'scale(1)'
-                      }}>
-                        {emoji}
-                      </span>
-                      {isSelected && (
-                        <span className="absolute text-xs text-white bg-blue-600 rounded-full h-5 w-5 flex items-center justify-center top-0 right-0">
-                          {selectionIndex + 1}
-                        </span>
-                      )}
-                    </button>
-                  );
-                })
-              ))}
-            </div>
-          </div>
-          
-          <div className="flex mt-4 gap-4">
-            <button 
-              onClick={submitSelection}
-              disabled={selectedEmojis.length < 2}
-              className={`px-6 py-2 rounded-lg font-bold transition-all ${
-                selectedEmojis.length >= 2
-                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white shadow-lg hover:shadow-cyan-500/20'
-                  : 'bg-white/20 text-white/50 cursor-not-allowed'
-              }`}
-            >
-              Submit Match {selectedEmojis.length > 0 && `(${selectedEmojis.length})`}
-            </button>
+        </div>
+      </div>
+      
+      <div 
+        ref={gridRef}
+        className="bg-white/10 backdrop-blur-sm rounded-lg p-4 w-full max-w-md"
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onTouchEnd={handleMouseUp}
+        onContextMenu={(e) => e.preventDefault()}
+      >
+        <div className="grid grid-cols-6 gap-2">
+          {grid.map((row, rowIndex) => (
+            row.map((emoji, colIndex) => {
+              const isSelected = selectedEmojis.some(
+                pos => pos.row === rowIndex && pos.col === colIndex
+              );
+              
+              // Find position in selection for connecting lines
+              const selectionIndex = selectedEmojis.findIndex(
+                pos => pos.row === rowIndex && pos.col === colIndex
+              );
+              
+              return (
+                <button
+                  key={`${rowIndex}-${colIndex}`}
+                  onClick={() => handleEmojiClick(rowIndex, colIndex)}
+                  onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                  onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                  onTouchStart={() => handleMouseDown(rowIndex, colIndex)}
+                  onTouchMove={(e) => {
+                    // Handle touch move for mobile drag selection
+                    if (!isDragging || !gridRef.current) return;
+                    
+                    const touch = e.touches[0];
+                    const rect = gridRef.current.getBoundingClientRect();
+                    const elementSize = rect.width / 6; // 6 columns
+                    
+                    // Calculate which grid cell the touch is over
+                    const x = Math.floor((touch.clientX - rect.left) / elementSize);
+                    const y = Math.floor((touch.clientY - rect.top) / elementSize);
+                    
+                    // Only process if within grid bounds
+                    if (x >= 0 && x < 6 && y >= 0 && y < grid.length) {
+                      handleMouseEnter(y, x);
+                    }
+                  }}
+                  className={`w-12 h-12 flex items-center justify-center text-2xl rounded-lg transition-all ${
+                    isSelected 
+                      ? 'bg-gradient-to-br from-cyan-600/70 to-blue-600/70 scale-95 shadow-inner ring-2 ring-white/30' 
+                      : 'bg-white/20 hover:bg-white/30 active:bg-white/40'
+                  }`}
+                  disabled={!gameStarted}
+                >
+                  <span className="transform transition-all" style={{
+                    transform: isSelected ? 'scale(1.2)' : 'scale(1)'
+                  }}>
+                    {emoji}
+                  </span>
+                  {isSelected && (
+                    <span className="absolute text-xs text-white bg-blue-600 rounded-full h-5 w-5 flex items-center justify-center top-0 right-0">
+                      {selectionIndex + 1}
+                    </span>
+                  )}
+                </button>
+              );
+            })
+          ))}
+        </div>
+      </div>
+      
+      <div className="flex mt-4 gap-4">
+        <button 
+          onClick={submitSelection}
+          disabled={selectedEmojis.length < 2}
+          className={`px-6 py-3 rounded-lg font-bold transition-all ${
+            selectedEmojis.length >= 2
+              ? 'bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 active:from-cyan-700 active:to-blue-700 text-white shadow-lg'
+              : 'bg-white/20 text-white/50 cursor-not-allowed'
+          }`}
+        >
+          Submit {selectedEmojis.length > 0 && `(${selectedEmojis.length})`}
+        </button>
+        
+        <button
+          onClick={() => setSelectedEmojis([])}
+          disabled={selectedEmojis.length === 0}
+          className={`px-4 py-3 rounded-lg transition-all ${
+            selectedEmojis.length > 0
+              ? 'bg-gray-800/50 text-white hover:bg-gray-700/50 active:bg-gray-600/50'
+              : 'bg-white/10 text-white/30 cursor-not-allowed'
+          }`}
+        >
+          Clear
+        </button>
+      </div>
+      
+      {/* Game over modal */}
+      {timeRemaining === 0 && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center p-4 bg-blue-900/80">
+          <div className="max-w-md w-full bg-white/10 backdrop-blur-sm rounded-lg p-6 text-white">
+            <h2 className="text-2xl font-bold mb-4 text-center bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              Game Over!
+            </h2>
+            
+            <p className="text-xl text-center mb-6">
+              Final Score: <span className="font-bold">{score}</span>
+            </p>
             
             <button
-              onClick={() => setSelectedEmojis([])}
-              disabled={selectedEmojis.length === 0}
-              className={`px-4 py-2 rounded-lg transition-all ${
-                selectedEmojis.length > 0
-                  ? 'bg-gray-800/50 text-white hover:bg-gray-700/50'
-                  : 'bg-white/10 text-white/30 cursor-not-allowed'
-              }`}
+              onClick={startGame}
+              className="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white font-bold rounded-lg transition-all duration-300"
             >
-              Clear
+              Play Again
             </button>
           </div>
-        </>
+        </div>
       )}
+      
+      <button
+        className="mt-6 px-4 py-2 bg-white/10 hover:bg-white/20 active:bg-white/30 rounded-lg text-white text-sm transition-colors"
+        onClick={() => {
+          setShowRules(true)
+          setShowCombinations(false)
+        }}
+      >
+        Show Instructions
+      </button>
+    </>
+  )
+
+  // Main render
+  return (
+    <div className="w-full h-full min-h-[600px] bg-gradient-to-br from-cyan-900 to-blue-800 rounded-lg overflow-hidden flex flex-col items-center justify-center p-4 relative">
+      {!gameStarted ? renderRules() : renderGame()}
     </div>
   )
 }

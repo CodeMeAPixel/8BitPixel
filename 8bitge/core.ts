@@ -51,7 +51,7 @@ export class GameEngine {
       persistState: options.persistState ?? true,
       orientation: options.orientation || OrientationMode.BOTH,
       responsive: options.responsive ?? true,
-      pixelRatio: options.pixelRatio ?? window.devicePixelRatio || 1,
+      pixelRatio: (options.pixelRatio ?? window.devicePixelRatio) || 1,
       allowPause: options.allowPause ?? true,
       fullscreenOnMobile: options.fullscreenOnMobile ?? true
     };
