@@ -1,0 +1,246 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 230 35% 7%;
+    --foreground: 210 40% 98%;
+
+    --card: 230 35% 7%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 230 35% 7%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 190 100% 50%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217 35% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 35% 15%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 217 35% 15%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217 35% 15%;
+    --input: 217 35% 15%;
+    --ring: 190 100% 50%;
+
+    --chart-1: 190 100% 50%;
+    --chart-2: 217 85% 65%;
+    --chart-3: 250 85% 65%;
+    --chart-4: 280 85% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Space Grotesk", sans-serif;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Orbitron", sans-serif;
+  }
+}
+
+/* Custom animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Arcade grid background */
+.arcade-grid {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Glowing text effect */
+.glow-text {
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 20px rgba(6, 182, 212, 0.5), 0 0 30px rgba(6, 182, 212, 0.3);
+}
+
+/* Pixel background animation */
+.pixel-bg {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: pixelFloat 20s linear infinite;
+}
+
+@keyframes pixelFloat {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 30px 30px;
+  }
+}
+
+/* Retro glow */
+.retro-glow {
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.3), 0 0 20px rgba(6, 182, 212, 0.2), 0 0 30px rgba(6, 182, 212, 0.1);
+}
+
+/* Button hover animation */
+@keyframes buttonGlow {
+  0% {
+    box-shadow: 0 0 5px rgba(6, 182, 212, 0.5), 0 0 10px rgba(6, 182, 212, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.7), 0 0 20px rgba(6, 182, 212, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(6, 182, 212, 0.5), 0 0 10px rgba(6, 182, 212, 0.3);
+  }
+}
+
+.button-glow:hover {
+  animation: buttonGlow 2s infinite;
+}
+
+/* Pixel art title style */
+.pixel-title {
+  font-family: 'Press Start 2P', cursive;
+  letter-spacing: 1px;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+/* Message fade in/out animation */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.animate-fade-in-out {
+  animation: fadeInOut 2s ease-in-out;
+}
+
+/* Grid pattern for game backgrounds */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 100%;
+  }
+}
+
+/* Pixelated border animation */
+@keyframes pixelBorderAnimate {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
+}
+
+.pixel-border {
+  position: relative;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.pixel-border::before {
+  content: '';
+  position: absolute;
+  top: -2px; right: -2px; bottom: -2px; left: -2px;
+  background: linear-gradient(45deg, rgba(6, 182, 212, 0.5), rgba(37, 99, 235, 0.5));
+  background-size: 200% 200%;
+  animation: pixelBorderAnimate 4s ease infinite;
+  z-index: -1;
+  border-radius: inherit;
+}
+
+/* Game card pixel border animation */
+.pixel-border {
+  position: relative;
+}
+
+.pixel-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(8, 145, 178, 0.1); /* Tailwind cyan-600 with opacity */
+  border-radius: 0.75rem; /* Matches the rounded-xl */
+  clip-path: polygon(
+    /* Top-left corner */
+    0% 8px, 8px 8px, 8px 0%, 
+    /* Top-right corner */
+    calc(100% - 8px) 0%, calc(100% - 8px) 8px, 100% 8px,
+    /* Bottom-right corner */
+    100% calc(100% - 8px), calc(100% - 8px) calc(100% - 8px), calc(100% - 8px) 100%,
+    /* Bottom-left corner */
+    8px 100%, 8px calc(100% - 8px), 0% calc(100% - 8px)
+  );
+  transition: all 0.3s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.pixel-border:hover::after {
+  opacity: 1;
+  border-color: rgba(8, 145, 178, 0.6);
+  animation: pixelGlow 2s infinite;
+}
+
+@keyframes pixelGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(8, 145, 178, 0.5), 
+                0 0 10px rgba(8, 145, 178, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 10px rgba(8, 145, 178, 0.8), 
+                0 0 20px rgba(8, 145, 178, 0.5);
+  }
+}
+
+/* No results animation */
+@keyframes pulseFilter {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.pulse-filter {
+  animation: pulseFilter 2s ease-in-out infinite;
+}
