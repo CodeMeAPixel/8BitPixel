@@ -151,9 +151,15 @@ We welcome contributions to 8BitPixel Arcade! Whether you want to fix bugs, impr
 
 See our [FuturePlans.md](./FuturePlans.md) for upcoming features and improvements.
 
+## Security
+
+We take the security of 8BitPixel Arcade seriously. For more information about reporting vulnerabilities and our security policies, please see our [Security Policy](./SECURITY.md).
+
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the GNU Affero General Public License v3.0 (AGPL-3.0) - see the [LICENSE](./LICENSE) file for details.
+
+The AGPL-3.0 license ensures that all users who interact with the software over a network have access to the source code. If you modify the code and share it with others or use it to provide a service over a network, you must also share your source code under the same license terms.
 
 ## Acknowledgements
 

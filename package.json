@@ -1,7 +1,9 @@
 {
   "name": "@codemeapixel/8bitarcade",
+  "description": "8bit Arcade - A retro gaming experience",
+  "author": "CodeMeAPixel <https://codemeapixel.dev>",
+  "license": "AGPL-3.0-only",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
