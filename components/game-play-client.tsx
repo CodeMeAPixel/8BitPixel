@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Navbar } from "@/components/navbar"
 import { Game } from "@/lib/games"

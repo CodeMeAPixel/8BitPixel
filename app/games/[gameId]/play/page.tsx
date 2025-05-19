@@ -2,7 +2,7 @@ import { notFound } from "next/navigation"
 import type { Metadata } from "next"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
-import { GamePlayClient } from "@/components/game-play-client"
+import GamePlayClient from "@/components/game-play-client"
 import { getAllGames, getGameById } from "@/lib/games"
 
 export async function generateStaticParams() {

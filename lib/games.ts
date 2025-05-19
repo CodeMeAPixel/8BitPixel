@@ -370,7 +370,15 @@ export async function getAllGames(): Promise<Game[]> {
 
 // Get game by ID
 export async function getGameById(id: string): Promise<Game | null> {
-  return gamesCatalog.find(game => game.id === id) || null;
+  // Use Array.find() instead of relying on implicit behavior
+  const game = gamesCatalog.find(game => game.id === id);
+  
+  if (!game) {
+    console.warn(`Game with ID "${id}" not found`);
+    return null;
+  }
+  
+  return game;
 }
 
 // Get featured games
